@@ -71,7 +71,7 @@
 
     <div
       class="resize-button-container"
-      *ngIf="originalURL && !isLoading"
+      *ngIf="originalURL"
     >
       <button
         class="resize-button"
@@ -84,17 +84,8 @@
   </div>
 
   <div
-    *ngIf="isLoading"
-    class="loading-card"
-  >
-    <div class="loading-spinner"></div>
-    <p>🔄 Resizing image with {{ method.toUpperCase() }}...</p>
-    <small>Please wait while we process your image</small>
-  </div>
-
-  <div
     class="insights-card"
-    *ngIf="info && !isLoading"
+    *ngIf="info"
   >
     <h3>📊 Resize Results</h3>
     <div class="stats-grid">

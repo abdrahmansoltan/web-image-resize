@@ -12,7 +12,6 @@ export class App {
   originalURL?: string;
   resizedURL?: string;
   info = '';
-  isLoading = false;
   resizeSize = 768;
 
   // New properties for better display
@@ -107,7 +106,6 @@ export class App {
   async onResize() {
     if (!this.selectedFile) return;
 
-    this.isLoading = true;
     const start = performance.now();
 
     try {
@@ -146,8 +144,6 @@ export class App {
     } catch (error) {
       console.error('Error resizing image:', error);
       this.info = 'Error occurred during image processing';
-    } finally {
-      this.isLoading = false;
     }
   }
 }
