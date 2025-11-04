@@ -1,0 +1,178 @@
+<div class="container">
+  <h1>🖼️ Image Resizing Demo</h1>
+
+  <div class="method-selector">
+    <h3>🔧 Resize Method</h3>
+    <div class="radio-group">
+      <label
+        class="radio-option"
+        [class.active]="method === 'canvas'"
+      >
+        <input
+          type="radio"
+          name="method"
+          value="canvas"
+          [(ngModel)]="method"
+          (ngModelChange)="onMethodChange()"
+        />
+        <span class="radio-custom"></span>
+        <div class="method-info">
+          <strong>Canvas API</strong>
+          <small>Built-in browser method</small>
+        </div>
+      </label>
+      <label
+        class="radio-option"
+        [class.active]="method === 'pica'"
+      >
+        <input
+          type="radio"
+          name="method"
+          value="pica"
+          [(ngModel)]="method"
+          (ngModelChange)="onMethodChange()"
+        />
+        <span class="radio-custom"></span>
+        <div class="method-info">
+          <strong>Pica</strong>
+          <small>High-quality resizing library</small>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <div class="controls-section">
+    <div class="size-control">
+      <label>
+        📏 Max Size (px):
+        <input
+          type="number"
+          [(ngModel)]="resizeSize"
+          placeholder="768"
+          min="100"
+          max="2000"
+        />
+      </label>
+    </div>
+
+    <div class="file-upload">
+      <label class="file-upload-label">
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        />
+        <span class="upload-text">
+          📁 Choose Image File
+          <small>Supports JPG, PNG, WEBP, AVIF</small>
+        </span>
+      </label>
+    </div>
+
+    <div
+      class="resize-button-container"
+      *ngIf="originalURL && !isLoading"
+    >
+      <button
+        class="resize-button"
+        (click)="onResize()"
+      >
+        🚀 Resize Image
+        <small>Process with {{ method.toUpperCase() }}</small>
+      </button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="isLoading"
+    class="loading-card"
+  >
+    <div class="loading-spinner"></div>
+    <p>🔄 Resizing image with {{ method.toUpperCase() }}...</p>
+    <small>Please wait while we process your image</small>
+  </div>
+
+  <div
+    class="insights-card"
+    *ngIf="info && !isLoading"
+  >
+    <h3>📊 Resize Results</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Method</span>
+        <span
+          class="stat-value method-badge"
+          [class]="method"
+        >{{ method.toUpperCase() }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Original Size</span>
+        <span class="stat-value size-original">{{ originalSize }} KB</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Resized Size</span>
+        <span class="stat-value size-resized">{{ resizedSize }} KB</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Compression</span>
+        <span
+          class="stat-value compression"
+          [class.good-compression]="compressionRatio > 50"
+        >{{ compressionRatio }}%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Processing Time</span>
+        <span class="stat-value duration">{{ duration }} ms</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">File Name</span>
+        <span class="stat-value filename">{{ fileName }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="preview-section"
+    *ngIf="originalURL"
+  >
+    <h3>🖼️ Image Comparison</h3>
+    <div>
+      <div class="image-card">
+        <div class="image-header">
+          <h4>📷 Original</h4>
+          <span
+            class="image-dimensions"
+            *ngIf="originalDimensions"
+          >{{ originalDimensions }}</span>
+        </div>
+        <div class="image-container">
+          <img
+            [src]="originalURL"
+            (load)="onOriginalImageLoad($event)"
+            (error)="onImageError($event, 'original')"
+          />
+        </div>
+      </div>
+      <div
+        class="image-card"
+        *ngIf="resizedURL"
+      >
+        <div class="image-header">
+          <h4>✨ Resized</h4>
+          <span
+            class="image-dimensions"
+            *ngIf="resizedDimensions"
+          >{{ resizedDimensions }}</span>
+        </div>
+        <div class="image-container">
+          <img
+            class="resized"
+            [src]="resizedURL"
+            (load)="onResizedImageLoad($event)"
+            (error)="onImageError($event, 'resized')"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
