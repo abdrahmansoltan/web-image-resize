@@ -39,24 +39,37 @@ export class ImageResizeService {
   }
 
   async resizeWithPica(file: File, maxSize = 768, quality = 0.8): Promise<File> {
+    console.log('Pica resize: Starting with maxSize:', maxSize, 'quality:', quality);
     const img = await this.loadImage(file);
     const { w, h } = this.getScaledSize(img.width, img.height, maxSize);
+    console.log('Pica resize: Original dimensions:', img.width, 'x', img.height);
+    console.log('Pica resize: Scaled dimensions:', w, 'x', h);
 
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
+    // Create source canvas from the image
+    const sourceCanvas = document.createElement('canvas');
+    sourceCanvas.width = img.width;
+    sourceCanvas.height = img.height;
+    const sourceCtx = sourceCanvas.getContext('2d')!;
+    sourceCtx.drawImage(img, 0, 0);
 
+    // Create destination canvas
+    const destCanvas = document.createElement('canvas');
+    destCanvas.width = w;
+    destCanvas.height = h;
+
+    // Use Pica to resize
     const p = pica();
-    await p.resize(img, canvas, {
-      quality: 2, // Medium quality for better compression (was 3)
-      unsharpAmount: 20, // Reduced from 80 to minimize file size increase
-      unsharpRadius: 0.3, // Reduced from 0.6
-      unsharpThreshold: 5, // Increased from 2 to be less aggressive
+    await p.resize(sourceCanvas, destCanvas, {
+      quality: 2, // Medium quality (0=lowest, 3=highest)
+      unsharpAmount: 20,
+      unsharpRadius: 0.3,
+      unsharpThreshold: 5,
     });
 
-    // Use slightly lower JPEG quality for Pica since it produces better quality at lower settings
-    const blob = await p.toBlob(canvas, 'image/jpeg', quality);
+    // Convert to blob
+    const blob = await p.toBlob(destCanvas, 'image/jpeg', quality);
 
+    console.log('Pica resize: Output blob size:', (blob.size / 1024).toFixed(1), 'KB');
     return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
   }
 }
