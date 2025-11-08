@@ -22,8 +22,13 @@ export class App {
   duration = '';
   originalDimensions = '';
   resizedDimensions = '';
+  showActualSize = false;
 
   constructor(private resizer: ImageResizeService) {}
+
+  toggleActualSize() {
+    this.showActualSize = !this.showActualSize;
+  }
 
   private selectedFile?: File;
 

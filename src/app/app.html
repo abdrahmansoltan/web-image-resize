@@ -126,8 +126,27 @@
     class="preview-section"
     *ngIf="originalURL"
   >
-    <h3>🖼️ Image Comparison</h3>
-    <div>
+    <div class="preview-header">
+      <h3>🖼️ Image Comparison</h3>
+      <button
+        class="toggle-size-button"
+        (click)="toggleActualSize()"
+        *ngIf="resizedURL"
+      >
+        {{ showActualSize ? '📐 Fit to Screen' : '🔍 View Actual Size' }}
+      </button>
+    </div>
+    <div
+      class="scroll-hint"
+      *ngIf="showActualSize"
+    >
+      Scroll to view full image dimensions
+    </div>
+
+    <div
+      class="image-grid"
+      [class.actual-size]="showActualSize"
+    >
       <div class="image-card">
         <div class="image-header">
           <h4>📷 Original</h4>
